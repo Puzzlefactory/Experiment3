@@ -1,5 +1,12 @@
-import type { Route } from './+types/projects-index-route'
-import { Form, Link, redirect, useNavigation } from 'react-router'
+import {
+  Form,
+  Link,
+  redirect,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+  type ActionFunctionArgs,
+} from 'react-router'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -16,11 +23,19 @@ import {
   listProjects,
 } from '@/app/features/projects/projects-api'
 
-export async function clientLoader() {
+type ProjectsActionData = {
+  ok: false
+  errors: {
+    name?: string[]
+    summary?: string[]
+  }
+}
+
+export async function loader() {
   return { projects: await listProjects() }
 }
 
-export async function clientAction({ request }: Route.ClientActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData()
   const result = createProjectSchema.safeParse({
     name: formData.get('name'),
@@ -38,10 +53,9 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
   return redirect('/projects')
 }
 
-export default function ProjectsIndexRoute({
-  loaderData,
-  actionData,
-}: Route.ComponentProps) {
+export default function ProjectsIndexRoute() {
+  const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>
+  const actionData = useActionData() as ProjectsActionData | undefined
   const navigation = useNavigation()
   const isSubmitting = navigation.state === 'submitting'
 

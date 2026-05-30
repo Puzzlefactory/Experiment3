@@ -1,19 +1,23 @@
-import type { Route } from './+types/project-detail-route'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { Link } from 'react-router'
+import { Link, useLoaderData, type LoaderFunctionArgs } from 'react-router'
 import { Page } from '@/app/layouts/page'
 import { getProject } from '@/app/features/projects/projects-api'
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+export async function loader({ params }: LoaderFunctionArgs) {
+  if (!params.projectId) {
+    throw new Response('Project id is required', { status: 400 })
+  }
+
   return { project: await getProject(params.projectId) }
 }
 
-export default function ProjectDetailRoute({ loaderData }: Route.ComponentProps) {
+export default function ProjectDetailRoute() {
+  const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>
   const { project } = loaderData
 
   return (

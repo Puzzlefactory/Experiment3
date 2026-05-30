@@ -2,6 +2,16 @@
 
 ## Critical Make Compatibility Rule
 
+Keep the Make/Vite entrypoint shape in place:
+
+- `index.html` loads `/src/main.tsx`
+- `src/main.tsx` renders `src/app/App.tsx`
+- `src/app/App.tsx` installs providers and renders the React Router provider
+
+Figma Make expects this entrypoint shape. Do not convert this project to React
+Router framework mode, do not delete `src/main.tsx`, and do not replace
+`src/app/App.tsx` with framework files.
+
 Keep the `src/app/components/` directory and its contents in place. Figma Make
 expects this scaffold to exist, and removing it has caused Make sessions to fail
 or behave unpredictably in past projects.
@@ -19,7 +29,7 @@ Before coding, inspect the relevant files and briefly tell the user:
 
 - which route module you will change or add
 - which feature/shared folder owns the work
-- which `clientLoader` or `clientAction` will handle data or mutations
+- which route `loader` or `action` will handle data or mutations
 - which shared API/backend/auth boundary will be used
 
 If a request would require changing dependencies, build config, routing mode, or
@@ -27,9 +37,9 @@ the app frame, ask before making that change.
 
 ## Architecture Rules
 
-- Use React Router 7 framework mode as configured in `react-router.config.ts`.
-- This is a SPA-mode app, so route data uses `clientLoader` and mutations use
-  `clientAction`.
+- Use React Router 7 data router inside the Make-compatible Vite entrypoint.
+- Route data uses route `loader` functions and mutations use route `action`
+  functions.
 - Do not fetch route data in components.
 - Do not use `useEffect` as a data-loading or mutation orchestration layer.
 - Keep route modules under `src/app/routes/`.
@@ -45,7 +55,8 @@ the app frame, ask before making that change.
 - App shell/layout: `src/app/layouts/app-frame.tsx`
 - Page header/content wrapper: `src/app/layouts/page.tsx`
 - Theme: `src/app/theme.ts`
-- Route registry: `src/app/routes.ts`
+- App entry: `src/app/App.tsx`
+- Route registry: `src/app/routes.tsx`
 - Loader-backed page: `src/app/routes/dashboard-route.tsx`
 - Action-backed form: `src/app/routes/projects-index-route.tsx`
 - Feature API wrapper: `src/app/features/projects/projects-api.ts`
@@ -83,10 +94,10 @@ Copy the pattern, not the example domain.
 
 ## When Adding A Feature
 
-1. Add or update the route in `src/app/routes.ts`.
+1. Add or update the route in `src/app/routes.tsx`.
 2. Add a route module in `src/app/routes/`.
 3. Put domain types, API wrappers, and components under `src/app/features/<feature>/`.
-4. Use `clientLoader` for data and `clientAction` for mutations.
+4. Use a route `loader` for data and a route `action` for mutations.
 5. Route modules call feature API wrappers.
 6. Feature API wrappers call the shared API client.
 7. The shared API client calls the fake backend.

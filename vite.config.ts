@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import path from 'path'
-import { reactRouter } from '@react-router/dev/vite'
 import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
 
 
 function figmaAssetResolver() {
@@ -19,7 +19,7 @@ function figmaAssetResolver() {
 export default defineConfig({
   plugins: [
     figmaAssetResolver(),
-    reactRouter(),
+    react(),
     // Tailwind remains for Make scaffold compatibility even though app-owned
     // code does not use Tailwind utilities.
     tailwindcss(),

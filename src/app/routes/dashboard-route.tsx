@@ -1,21 +1,21 @@
-import type { Route } from './+types/dashboard-route'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { Link } from 'react-router'
+import { Link, useLoaderData } from 'react-router'
 import Button from '@mui/material/Button'
 import { Page } from '@/app/layouts/page'
 import { prototypeApi } from '@/app/shared/api/prototype-api'
 import type { DashboardResponse } from '@/app/shared/backend/fake-backend'
 import type { Project } from '@/app/features/projects/types'
 
-export async function clientLoader() {
+export async function loader() {
   return prototypeApi.get<DashboardResponse>('/dashboard')
 }
 
-export default function DashboardRoute({ loaderData }: Route.ComponentProps) {
+export default function DashboardRoute() {
+  const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>
   const metrics = [
     { label: 'Active projects', value: loaderData.activeProjects },
     { label: 'In review', value: loaderData.inReview },

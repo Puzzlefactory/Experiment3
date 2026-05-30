@@ -1,8 +1,6 @@
 {
   "include": [
-    ".react-router/types/**/*",
     "src/**/*",
-    "react-router.config.ts",
     "vite.config.ts"
   ],
   "compilerOptions": {
@@ -26,7 +24,6 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    },
-    "rootDirs": [".", "./.react-router/types"]
+    }
   }
 }

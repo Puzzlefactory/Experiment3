@@ -1,16 +1,16 @@
-import type { Route } from './+types/settings-route'
 import Alert from '@mui/material/Alert'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useLoaderData } from 'react-router'
 import { Page } from '@/app/layouts/page'
 import { loadPrototypeSession } from '@/app/shared/auth/session-storage'
 import { prototypeRolePolicy } from '@/app/shared/auth/policy'
 import { prototypePermissions, prototypeRoles } from '@/app/shared/auth/roles'
 import type { PrototypeRoleDefinition } from '@/app/shared/auth/types'
 
-export async function clientLoader() {
+export async function loader() {
   const session = loadPrototypeSession()
   prototypeRolePolicy.requirePermission(session, prototypePermissions.viewSettings)
   return {
@@ -19,7 +19,9 @@ export async function clientLoader() {
   }
 }
 
-export default function SettingsRoute({ loaderData }: Route.ComponentProps) {
+export default function SettingsRoute() {
+  const loaderData = useLoaderData() as Awaited<ReturnType<typeof loader>>
+
   return (
     <Page
       eyebrow="Prototype controls"
