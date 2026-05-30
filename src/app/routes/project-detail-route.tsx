@@ -6,7 +6,7 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { Link } from 'react-router'
-import { Page } from '@/app/page'
+import { Page } from '@/app/layouts/page'
 import { getProject } from '@/app/features/projects/projects-api'
 
 export async function clientLoader({ params }: Route.ClientLoaderArgs) {

@@ -5,16 +5,28 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
+import IconButton from '@mui/material/IconButton'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import MenuList from '@mui/material/MenuList'
+import MenuItem from '@mui/material/MenuItem'
+import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import FolderIcon from '@mui/icons-material/Folder'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { RoleSwitcherDialog } from './role-switcher-dialog'
-import { usePrototypeSessionStore } from '@/app/shared/state/prototype-session-store'
+import { LogOut, Settings, User } from 'lucide-react'
+import { RoleSwitcherDialog } from '@/app/shared/auth/role-switcher-dialog'
+import {
+  clearPrototypeSession,
+  loadPrototypeSession,
+  savePrototypeSession,
+} from '@/app/shared/auth/session-storage'
+import type { PrototypeSession } from '@/app/shared/auth/types'
 
 const drawerWidth = 248
 
@@ -29,8 +41,11 @@ interface AppFrameProps {
 }
 
 export function AppFrame({ children }: AppFrameProps) {
-  const { session, logout } = usePrototypeSessionStore()
-  const [roleSwitcherOpen, setRoleSwitcherOpen] = useState(!session)
+  const [session, setSession] = useState<PrototypeSession | null>(() =>
+    loadPrototypeSession(),
+  )
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [roleSwitcherOpen, setRoleSwitcherOpen] = useState(false)
   const revalidator = useRevalidator()
 
   const userLabel = useMemo(() => {
@@ -42,9 +57,22 @@ export function AppFrame({ children }: AppFrameProps) {
   }, [session])
 
   function handleLogout() {
-    logout()
+    setProfileMenuOpen(false)
+    clearPrototypeSession()
+    setSession(null)
     setRoleSwitcherOpen(true)
     revalidator.revalidate()
+  }
+
+  function handleSessionSelected(nextSession: PrototypeSession) {
+    savePrototypeSession(nextSession)
+    setSession(nextSession)
+    revalidator.revalidate()
+  }
+
+  function handleOpenRoleSwitcher() {
+    setProfileMenuOpen(false)
+    setRoleSwitcherOpen(true)
   }
 
   return (
@@ -69,10 +97,58 @@ export function AppFrame({ children }: AppFrameProps) {
           </Box>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Chip color={session ? 'primary' : 'default'} label={userLabel} />
-            <Button variant="outlined" onClick={() => setRoleSwitcherOpen(true)}>
-              Switch role
-            </Button>
-            {session ? <Button onClick={handleLogout}>Logout</Button> : null}
+            <ClickAwayListener onClickAway={() => setProfileMenuOpen(false)}>
+              <Box sx={{ position: 'relative' }}>
+                <IconButton
+                  aria-controls={profileMenuOpen ? 'profile-menu' : undefined}
+                  aria-expanded={profileMenuOpen ? 'true' : undefined}
+                  aria-haspopup="menu"
+                  aria-label="Open profile menu"
+                  onClick={() => setProfileMenuOpen((open) => !open)}
+                >
+                  <User aria-hidden size={20} strokeWidth={2} />
+                </IconButton>
+                {profileMenuOpen ? (
+                  <Paper
+                    elevation={6}
+                    sx={{
+                      position: 'absolute',
+                      right: 0,
+                      top: 'calc(100% + 8px)',
+                      minWidth: 220,
+                      overflow: 'hidden',
+                      zIndex: (theme) => theme.zIndex.modal,
+                    }}
+                  >
+                    <MenuList autoFocusItem id="profile-menu">
+                      <MenuItem onClick={handleOpenRoleSwitcher}>
+                        <ListItemIcon>
+                          <User aria-hidden size={18} strokeWidth={2} />
+                        </ListItemIcon>
+                        Switch role
+                      </MenuItem>
+                      <MenuItem
+                        component={NavLink}
+                        to="/settings"
+                        onClick={() => setProfileMenuOpen(false)}
+                      >
+                        <ListItemIcon>
+                          <Settings aria-hidden size={18} strokeWidth={2} />
+                        </ListItemIcon>
+                        Settings
+                      </MenuItem>
+                      <Divider />
+                      <MenuItem onClick={handleLogout}>
+                        <ListItemIcon>
+                          <LogOut aria-hidden size={18} strokeWidth={2} />
+                        </ListItemIcon>
+                        Logout
+                      </MenuItem>
+                    </MenuList>
+                  </Paper>
+                ) : null}
+              </Box>
+            </ClickAwayListener>
           </Stack>
         </Toolbar>
       </AppBar>
@@ -134,6 +210,7 @@ export function AppFrame({ children }: AppFrameProps) {
       </Box>
 
       <RoleSwitcherDialog
+        onSessionSelected={handleSessionSelected}
         open={roleSwitcherOpen}
         onClose={() => setRoleSwitcherOpen(false)}
       />

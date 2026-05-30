@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import path from 'path'
 import { reactRouter } from '@react-router/dev/vite'
 import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
 
 
 function figmaAssetResolver() {
@@ -21,9 +20,8 @@ export default defineConfig({
   plugins: [
     figmaAssetResolver(),
     reactRouter(),
-    // The React and Tailwind plugins are both required for Make, even if
-    // Tailwind is not being actively used – do not remove them
-    react(),
+    // Tailwind remains for Make scaffold compatibility even though app-owned
+    // code does not use Tailwind utilities.
     tailwindcss(),
   ],
   resolve: {

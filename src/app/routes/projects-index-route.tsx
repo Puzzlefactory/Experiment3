@@ -8,7 +8,7 @@ import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { Page } from '@/app/page'
+import { Page } from '@/app/layouts/page'
 import type { Project } from '@/app/features/projects/types'
 import {
   createProject,

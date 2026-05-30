@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { Link } from 'react-router'
-import { Page } from './page'
+import { Page } from './layouts/page'
 
 export default function NotFoundRoute() {
   return (

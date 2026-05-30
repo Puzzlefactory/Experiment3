@@ -13,20 +13,24 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { prototypeRoles } from '@/app/shared/auth/roles'
 import { createSessionForRole } from '@/app/shared/auth/session-factory'
-import { usePrototypeSessionStore } from '@/app/shared/state/prototype-session-store'
+import type { PrototypeSession } from '@/app/shared/auth/types'
 
 interface RoleSwitcherDialogProps {
+  onSessionSelected: (session: PrototypeSession) => void
   open: boolean
   onClose: () => void
 }
 
-export function RoleSwitcherDialog({ open, onClose }: RoleSwitcherDialogProps) {
-  const { setSession } = usePrototypeSessionStore()
+export function RoleSwitcherDialog({
+  onSessionSelected,
+  open,
+  onClose,
+}: RoleSwitcherDialogProps) {
   const revalidator = useRevalidator()
   const [role, setRole] = useState(prototypeRoles[0]?.role ?? 'admin')
 
   function handleLogin() {
-    setSession(createSessionForRole(role))
+    onSessionSelected(createSessionForRole(role))
     revalidator.revalidate()
     onClose()
   }

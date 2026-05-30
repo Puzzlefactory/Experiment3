@@ -1,5 +1,15 @@
 # Prototyper Guidelines
 
+## Critical Make Compatibility Rule
+
+Keep the `src/app/components/` directory and its contents in place. Figma Make
+expects this scaffold to exist, and removing it has caused Make sessions to fail
+or behave unpredictably in past projects.
+
+Treat `src/app/components/` as Make platform compatibility scaffold, not as the
+primary app architecture. Do not delete, move, or rewrite it unless the user
+explicitly asks for a scaffold change.
+
 This project already has its baseline architecture. Do not recreate it. Preserve
 and extend the existing patterns.
 
@@ -32,16 +42,17 @@ the app frame, ask before making that change.
 
 ## Existing Patterns To Follow
 
-- App shell/layout: `src/app/app-frame.tsx`
-- Page header/content wrapper: `src/app/page.tsx`
+- App shell/layout: `src/app/layouts/app-frame.tsx`
+- Page header/content wrapper: `src/app/layouts/page.tsx`
 - Theme: `src/app/theme.ts`
 - Route registry: `src/app/routes.ts`
 - Loader-backed page: `src/app/routes/dashboard-route.tsx`
 - Action-backed form: `src/app/routes/projects-index-route.tsx`
 - Feature API wrapper: `src/app/features/projects/projects-api.ts`
 - Fake backend: `src/app/shared/backend/fake-backend.ts`
-- Role switcher/auth session: `src/app/role-switcher-dialog.tsx`
+- Role switcher/auth session: `src/app/shared/auth/role-switcher-dialog.tsx`
 - Role and permission definitions: `src/app/shared/auth/roles.ts`
+- Make compatibility components: `src/app/components/`
 
 Copy the pattern, not the example domain.
 
