@@ -8,8 +8,4 @@
   Run `npm i` to install the dependencies.
 
   Run `npm run dev` to start the development server.
-
-  ## GitHub Sync Probe
-
-  Marker: github-to-figma-make-sync-test-2026-05-17
   
