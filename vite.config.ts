@@ -25,7 +25,6 @@ export default defineConfig({
     tailwindcss(),
   ],
   resolve: {
-    tsconfigPaths: true,
     alias: {
       // Alias @ to the src directory
       '@': path.resolve(__dirname, './src'),
